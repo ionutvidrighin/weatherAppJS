@@ -156,7 +156,7 @@ async function retrieveData() {
         if (cityName.length >= 9) {
             gsap.fromTo('#city_name', { opacity: 0, stagger: 0.2 }, { opacity: 1, stagger: 0.2, duration: .6 });
             cityDisplay.innerText = cityName;
-            cityDisplay.style.fontSize = '230%';
+            cityDisplay.style.fontSize = '200%';
         } else {
             cityDisplay.innerText = cityName;
             gsap.fromTo('#city_name', { opacity: 0, stagger: 0.2 }, { opacity: 1, stagger: 0.2, duration: .6 });
@@ -293,14 +293,14 @@ async function retrieveData() {
             }
 
             if (weather_descriptions == 'Cloudy' || weather_descriptions == 'Partly cloudy' 
-            || weather_descriptions == 'Overcast') {
+            || weather_descriptions == 'Overcast' || weather_descriptions == 'Patchy rain possible') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/cloudy.jpg)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {
-                        className: 'clear_clouds',
-                        src: 'icons/clear_clouds.png'
+                        className: 'cloudy',
+                        src: 'icons/cloudy.png'
                     });
-                gsap.fromTo('.clear_clouds', {y: 5}, {duration: 3, y: -10});
+                gsap.fromTo('.cloudy', {y: 5}, {duration: 3, y: -10});
                 //differentWeather.push(weather_descriptions);
                 printWeatherDescription.innerText = differentWeather;
 
@@ -309,7 +309,8 @@ async function retrieveData() {
             }
 
 
-             if (weather_descriptions == 'Clear/Sunny' || weather_descriptions == 'Clear') {
+             if (weather_descriptions == 'Clear/Sunny' || weather_descriptions == 'Clear' 
+                || weather_descriptions == 'Sunny') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/clouds.PNG)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {
@@ -339,7 +340,8 @@ async function retrieveData() {
                 || weather_descriptions == 'Moderate or heavy sleet' || weather_descriptions == 'Light sleet showers' 
                 || weather_descriptions == 'Moderate or heavy sleet' || weather_descriptions == 'Light sleet' 
                 || weather_descriptions == 'Patchy sleet nearby' || weather_descriptions == 'Moderate or heavy showers of ice pellets'
-                || weather_descriptions == 'Light showers of ice pellets' || weather_descriptions == 'Rain, Mist') {
+                || weather_descriptions == 'Light showers of ice pellets' || weather_descriptions == 'Rain, Mist'
+                || weather_descriptions == 'Rain Shower') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/rain.PNG)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {

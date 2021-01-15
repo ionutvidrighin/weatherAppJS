@@ -393,14 +393,27 @@ h1 {
     .cloudy {
         margin-top: 15px;
         width: 120px;
-        height: 120px; 
+        height: 100px; 
     }
     
     .snow, .thunder, 
-    .cloudy1, .rain, .clear_clouds {
-        margin-top: 9px;
-        width: 120px;
-        height: 120px; 
+    .cloudy1,  {
+        margin-top: 15px;
+        width: 100px;
+        height: 80px; 
+    }
+
+    .clear_clouds {
+        margin-top: 15px;
+        width: 130px;
+        height: 80px;  
+    }
+
+    .rain {
+        margin-top: 20px;
+        margin-right: 12px;
+        width: 130px;
+        height: 115px; 
     }
     
     .moon, .fog {
