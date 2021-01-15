@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Weather App</title>
+</head>
+<body>
+    <div class="user_data">
+        <h2 class="current_location">Your current location: </h2>
+        <span id="location"></span>
+        <h4 id="user_actualDate"> </h4> 
+        <h4 id="user_hour"></h4>
+        <span class="line"></span>
+    </div>
+
+    <div class="main">
+            <h1>Weather App</h1>
+            <h2 id="h2_element">Check the weather in your city</h2>
+        <div class="center">
+            <input type="text" class="search" id="" placeholder="City name..."> 
+            <div class="button"><span id="cauta">Search</span></div>
+        </div>
+    </div>
+
+    <div class="container startApp">
+       
+        <div class="weather">
+            <div id="overflow"></div>
+            <h2 class="temp"><span id="temp"> </span> </h2>
+            <h3 id="description"> </h3>
+            <h2 id="city_name"> </h2>
+            <h2 id="country"> </h2>
+
+            <h2 class="hour"><span id="local_time"> </span></h2>
+        </div>
+
+        <div class="infos">
+            <div class="upper_infos">
+                <div class="weather_icons"> 
+                
+                    <img class=" " src=" ">
+                
+                </div>
+                <p id="currentDay"> </p>
+                <p><span id="currentTemp"></span> </p>
+            </div>
+            <br>
+
+            <div class="lower_infos">
+                <h3 class="daysForecast">3 days weather forecast:</h3>
+                <div class="forecast">
+                    <p class="forecastDays" id="first_day"> </p> <span id="forecast_temp1"> </span>
+                    <p class="forecastDays" id="second_day"> </p> <span id="forecast_temp2"> </span>
+                    <p class="forecastDays" id="third_day"> </p> <span id="forecast_temp3"> </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
+    <script type="module" src="script.js" defer crossorigin="anonymous" ></script>
+</body>
+</html>
