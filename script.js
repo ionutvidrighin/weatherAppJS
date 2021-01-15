@@ -11,7 +11,7 @@ const successfulLookup = function(userPosition) {
     const key = '0c7d1ecac421446596b54095e7910502';
     const fetchData = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&language=ro&key=${key}`);
     const getData = await fetchData.json();
-        console.log(getData);
+       // console.log(getData);
     
         let address = getData.results[0].components.city 
                     + ' - ' + getData.results[0].components.country 
@@ -73,25 +73,25 @@ window.navigator.geolocation
 let searchedCity = document.querySelector('.search');
 let tempElement = document.querySelector('.temp');
 let printWeatherDescription = document.querySelector('#description');
-let city = document.querySelector('#city_name'); // city inside right div
+let cityDisplay = document.querySelector('#city_name'); // city inside right div
 let countryDisplay = document.querySelector('#country'); // country code inside right div
-let hourRight = document.querySelector('.hour'); // hour inside right div
+let printLocalTime = document.querySelector('#local_time');
 
 function whiteColor() {
     tempElement.style.color = 'rgba(255, 255, 255, 0.8)';
-    city.style.color = 'rgba(255, 255, 255, 0.8)';
+    cityDisplay.style.color = 'rgba(255, 255, 255, 0.8)';
     printWeatherDescription.style.color = 'rgba(255, 255, 255, 0.8)';
-    countryDisplay.style.color = 'rgba(255, 255, 255, 0.8)';  
-    hourRight.style.color = 'rgba(255, 255, 255, 0.8)';
+    countryDisplay.style.color = 'rgba(255, 255, 255, 0.8)';      
+    printLocalTime.style.color = 'rgba(255, 255, 255, 0.8)';
     searchedCity.value = '';
 }
 
 function blackColor() {
     tempElement.style.color = 'rgba(0, 0, 0, 0.8)';
-    city.style.color = 'rgb(0, 0, 0)';
+    cityDisplay.style.color = 'rgb(0, 0, 0)';
     printWeatherDescription.style.color = 'rgb(0, 0, 0)';
+    printLocalTime.style.color = 'rgb(0, 0, 0)';
     countryDisplay.style.color = 'rgb(0, 0, 0)';
-    hourRight.style.color = 'rgb(0, 0, 0)';
     searchedCity.value = '';
 }
 
@@ -102,57 +102,71 @@ function getDayOfWeek(date) {
     ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
 }
 
-let printLocalTime = document.querySelector('#local_time');
 //let printTimeZone_min = document.querySelector('#tz_min');
 let currentDayInfo = document.querySelector('#currentDay');
 
 async function retrieveData() {
 
     // 1st API call - Live Weather
-    const LiveWeatherKey = 'f6e61e7cdc296a7f1a802ec984f54f2b';
-    let currentWeatherData = await fetch(`http://api.weatherstack.com/current?access_key=${LiveWeatherKey}&query=${searchedCity.value}`);
-    const currentWeatherRes = await currentWeatherData.json();
-    console.log(currentWeatherRes);
+   // const LiveWeatherKey = 'f6e61e7cdc296a7f1a802ec984f54f2b';
+   // let currentWeatherData = await fetch(`http://api.weatherstack.com/current?access_key=${LiveWeatherKey}&query=${searchedCity.value}`);
+   // const currentWeatherRes = await currentWeatherData.json();
+
+   const LiveWeatherKey = '1ed55d844b5945b4862170323211501';
+   const weatherData = await fetch(`https://api.worldweatheronline.com/premium/v1/weather.ashx?key=${LiveWeatherKey}&q=${searchedCity.value}&date=today&tp=1&showlocaltime=yes&format=json`)
+   const currentWeatherRes = await weatherData.json();
+   console.log(currentWeatherRes);   
 
     // 2nd API call - 3 Days Weather Forecast
     const forecastKey = '8006b9c4988d70b96d8fb158740d2f9a';
     let forecastData = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${searchedCity.value}&units=metric&appid=${forecastKey}`);
     const forecastRes = await forecastData.json();
-    console.log(forecastRes);
-
+    console.log(forecastRes)
 
     // Live Weather Data retrieved from 1st API
     /////////////////////////////////////////////////////////////////////////
-    let {location: {country, name, localtime} } = currentWeatherRes;
-    let {current: {temperature} } = currentWeatherRes;
-    let {current:{ weather_descriptions} } = currentWeatherRes; 
+    let {data: {current_condition: [fetchData] } } = currentWeatherRes;
+    let {data: {request: [city] } } = currentWeatherRes;
+    let {data: {time_zone: [time] } } = currentWeatherRes;
+    let weather_descriptions = fetchData.weatherDesc[0].value;
+    //console.log(weather_descriptions);
     ///////////////////////////////////////////////////////////////////////////
 
+    let differentWeather = [];
+    differentWeather.push(weather_descriptions)
+    //console.log(differentWeather[0])
+
+    printWeatherDescription.innerHTML = differentWeather[0];
+
+    var cityName = city.query;
+    cityName = cityName.split(",")[0];
+
+    var countryName = city.query;
+    countryName = countryName.split(",")[1];
 
      // delay displaying the current day, countryCode & Clock on the screen;
      setTimeout(function(){
-        currentDayInfo.innerText = getDayOfWeek(localtime);
-        gsap.fromTo('#country', { opacity: 0, stagger: 0.2 }, { opacity: 1, stagger: 0.2, duration: .6 });
-        countryDisplay.textContent = country;
-        printLocalTime.innerText = localtime.substring(11, 16);
-    }, 200);
+        currentDayInfo.innerText = getDayOfWeek(time.localtime);
+        //gsap.fromTo('#country', { opacity: 0, stagger: 0.2 }, { opacity: 1, stagger: 0.2, duration: .6 });
+        countryDisplay.innerText = countryName;
+        printLocalTime.innerText = time.localtime.substring(11, 16);
+    }, 1000);
 
 
-   // console.log(fetchedCityName.length)
-        if (name.length >= 9) {
+        if (cityName.length >= 9) {
             gsap.fromTo('#city_name', { opacity: 0, stagger: 0.2 }, { opacity: 1, stagger: 0.2, duration: .6 });
-            city.innerText = name;
-            city.style.fontSize = 'x-large';
+            cityDisplay.innerText = cityName;
+            cityDisplay.style.fontSize = '230%';
         } else {
-            city.innerText = name;
+            cityDisplay.innerText = cityName;
             gsap.fromTo('#city_name', { opacity: 0, stagger: 0.2 }, { opacity: 1, stagger: 0.2, duration: .6 });
         }
 
 
     let tempMainSection = document.querySelector('#temp'); // temperature inside right div
     let CurrentTempInfoSection = document.querySelector('#currentTemp'); // temperature under icon (info section)
-    tempMainSection.innerText = temperature + ' °C';
-    CurrentTempInfoSection.innerText = temperature + ' °C';
+    tempMainSection.innerText = fetchData.temp_C + ' °C';
+    CurrentTempInfoSection.innerText = fetchData.temp_C + ' °C';
 
         // select days (HTML) elements needed to color according to Light / Dark mode
         let forecastDay1Info = document.getElementById('first_day');
@@ -183,6 +197,7 @@ async function retrieveData() {
     }
 
     function addForecastNight() { 
+        gsap.fromTo(".container", {opacity: 0}, {duration: 5, opacity: 1});
         forecastDay1Info.innerText = getDayOfWeek(forecastWeekDay1);
         forecastDay2Info.innerText = getDayOfWeek(forecastWeekDay2);
         forecastDay3Info.innerText = getDayOfWeek(forecastWeekDay3);
@@ -201,11 +216,11 @@ async function retrieveData() {
         forecastTemp3.innerText = RoundNum(FetchforecastTempDay3) + ' °C';
         forecastTemp3.style.color = 'rgb(255, 255, 255)';
         // -------------------------------------------------------------- //
-        printWeatherDescription.innerText = weather_descriptions;
     }
 
     function addForecastDay() {
-        gsap.fromTo(".infos", {opacity: 0}, {duration: 7, backgroundColor: 'rgba(255, 255, 255, 0.4)', opacity: 1});
+        gsap.fromTo(".container", {opacity: 0}, {duration: 5, opacity: 1});
+        gsap.fromTo(".infos", {opacity: 0}, {duration: 4, backgroundColor: 'rgba(255, 255, 255, 0.4)', opacity: 1});
         forecastDay1Info.innerText = getDayOfWeek(forecastWeekDay1);
         forecastDay2Info.innerText = getDayOfWeek(forecastWeekDay2);
         forecastDay3Info.innerText = getDayOfWeek(forecastWeekDay3);
@@ -224,11 +239,10 @@ async function retrieveData() {
         forecastTemp3.innerText = RoundNum(FetchforecastTempDay3) + ' °C';
         forecastTemp3.style.color = 'black';
         // -------------------------------------------------------------- //
-        printWeatherDescription.innerText = weather_descriptions;
     }
 
     let img = document.querySelector('img'); // select weather icon and manipulate below
-    let checkTime = localtime.substring(11, 13);
+    let checkTime = time.localtime.substring(11, 13);
 
         if (checkTime >= 22 || checkTime <= 6) {
             let weatherContainer = document.querySelector('.container');
@@ -254,9 +268,32 @@ async function retrieveData() {
             let weatherContainer = document.querySelector('.container');
             weatherContainer.classList.remove("startApp");
 
+            //console.log(weather_descriptions)
+        
+            if ( differentWeather[0] == 'Light snow' || weather_descriptions == 'Moderate or heavy snow in area with thunder' 
+            || weather_descriptions == 'Patchy light snow in area with thunder' 
+            || weather_descriptions == 'Moderate or heavy snow showers' || weather_descriptions == 'Light snow showers'
+            || weather_descriptions == 'Heavy snow' || weather_descriptions == 'Patchy heavy snow'
+            || weather_descriptions == 'Moderate snow' || weather_descriptions == 'Patchy moderate snow'
+            || weather_descriptions == 'Patchy light snow' || weather_descriptions == 'Blowing snow'
+            || weather_descriptions == 'Patchy snow nearby' || weather_descriptions == 'Moderate or Heavy freezing rain'
+            || weather_descriptions == 'Blizzard' || weather_descriptions == 'Rain And Small Hail/Snow Pallets With Thunderstorm') {
+                gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/snowing.PNG)', opacity: 1});   
+                img.removeAttribute('class');
+                    Object.assign(img, {
+                        className: 'snow',
+                        src: 'icons/snow.png'
+                    })
+                gsap.fromTo('.snow', {y: 5}, {duration: 3, y: -20});
+                //differentWeather.push(weather_descriptions);
+                printWeatherDescription.textContent = differentWeather[0];
+                differentWeather = [];
+        
+                blackColor();
+            }
+
             if (weather_descriptions == 'Cloudy' || weather_descriptions == 'Partly cloudy' 
-            || weather_descriptions == 'Overcast' || weather_descriptions == 'Patchy rain possible' 
-            || weather_descriptions == 'Patchy rain possible') {
+            || weather_descriptions == 'Overcast') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/cloudy.jpg)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {
@@ -264,10 +301,15 @@ async function retrieveData() {
                         src: 'icons/clear_clouds.png'
                     });
                 gsap.fromTo('.clear_clouds', {y: 5}, {duration: 3, y: -10});
-                blackColor();
+                //differentWeather.push(weather_descriptions);
+                printWeatherDescription.innerText = differentWeather;
+
+                differentWeather = [];
+                whiteColor();
             }
 
-            if (weather_descriptions == 'Clear' || weather_descriptions == 'Sunny' ) {
+
+             if (weather_descriptions == 'Clear/Sunny' || weather_descriptions == 'Clear') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/clouds.PNG)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {
@@ -276,29 +318,28 @@ async function retrieveData() {
                     });
                 blackColor();
                 gsap.fromTo('.sun', {y: 5}, {duration: 3, y: -20});
+
+                //differentWeather.push(weather_descriptions);
+                printWeatherDescription.innerText = differentWeather;
+    
+                differentWeather = [];
+                console.log(differentWeather)
             }
 
-            if (weather_descriptions == 'Snow' || weather_descriptions == 'Blizzard' 
-            || weather_descriptions == 'Light Snow, Mist' || weather_descriptions == 'Light snow'
-            || weather_descriptions == 'Moderate snow' || weather_descriptions == 'Blowing snow'
-            || weather_descriptions == 'Patchy sleet possible' || weather_descriptions == 'Light Snow, Mist, Snow') {
-                gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/snowing.PNG)', opacity: 1});   
-                img.removeAttribute('class');
-                    Object.assign(img, {
-                        className: 'snow',
-                        src: 'icons/snow.png'
-                    })
-                gsap.fromTo('.snow', {y: 5}, {duration: 3, y: -20});
-                blackColor();
-            }
 
-            if (weather_descriptions == 'Rain' || weather_descriptions == 'Patchy light drizzle' 
-            || weather_descriptions == 'Light Rain' || weather_descriptions == 'Moderate or heavy rain shower' 
-            || weather_descriptions == 'Moderate rain at times' || weather_descriptions == 'Moderate rain'
-            || weather_descriptions == 'Patchy light rain' || weather_descriptions == 'Light freezing rain' 
-            || weather_descriptions == 'Heavy rain at times' || weather_descriptions == 'Heavy rain' 
-            || weather_descriptions == 'Light drizzle' || weather_descriptions == 'Freezing drizzle' 
-            || weather_descriptions == 'Heavy freezing drizzle') {
+            if (weather_descriptions == 'Torrential rain shower' || weather_descriptions == 'Moderate or heavy rain shower' 
+                || weather_descriptions == 'Light rain shower' || weather_descriptions == 'Moderate or heavy rain shower' 
+                || weather_descriptions == 'Light freezing rain' || weather_descriptions == 'Heavy rain at times'
+                || weather_descriptions == 'Heavy rain' || weather_descriptions == 'Moderate rain at times' 
+                || weather_descriptions == 'Moderate rain' || weather_descriptions == 'Patchy light rain' 
+                || weather_descriptions == 'Light rain' || weather_descriptions == 'Patchy rain nearby' 
+                || weather_descriptions == 'Heavy freezing drizzle' || weather_descriptions == 'Freezing drizzle' 
+                || weather_descriptions == 'Light drizzle' || weather_descriptions == 'Patchy light drizzle' 
+                || weather_descriptions == 'Patchy freezing drizzle nearby' || weather_descriptions == 'Ice pellets'
+                || weather_descriptions == 'Moderate or heavy sleet' || weather_descriptions == 'Light sleet showers' 
+                || weather_descriptions == 'Moderate or heavy sleet' || weather_descriptions == 'Light sleet' 
+                || weather_descriptions == 'Patchy sleet nearby' || weather_descriptions == 'Moderate or heavy showers of ice pellets'
+                || weather_descriptions == 'Light showers of ice pellets' || weather_descriptions == 'Rain, Mist') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/rain.PNG)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {
@@ -306,11 +347,17 @@ async function retrieveData() {
                         src: 'icons/rain.png'
                     })
                 gsap.fromTo('.rain', {y: 5}, {duration: 3, y: -20});
+                //differentWeather.push(weather_descriptions);
+                printWeatherDescription.innerText = differentWeather;
+                differentWeather = [];
                 whiteColor();
             }
 
-            if(weather_descriptions == 'Thunderstorm' || weather_descriptions == 'Light Rain With Thunderstorm'
-            || weather_descriptions == 'Thundery outbreaks possible') {
+            if(weather_descriptions == 'Moderate or heavy rain in area with thunder' 
+                || weather_descriptions == 'Patchy light rain in area with thunder'
+                || weather_descriptions == 'Thundery outbreaks in nearby' 
+                || weather_descriptions == 'Patchy light rain in area with thunder'
+                || weather_descriptions == 'Thunderstorm') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/thunder.PNG)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {
@@ -319,11 +366,13 @@ async function retrieveData() {
                     })
                 
                 gsap.fromTo('.thunder', {y: 5}, {duration: 3, y: -20});
+                //differentWeather.push(weather_descriptions);
+                printWeatherDescription.innerText = differentWeather;
+                differentWeather = [];
                 whiteColor();
             }
 
-            if(weather_descriptions == 'Mist' || weather_descriptions == 'Haze' || weather_descriptions == 'Fog'
-            || weather_descriptions == 'Freezing fog') {
+            if (weather_descriptions == 'Freezing fog' || weather_descriptions == 'Mist' || weather_descriptions == 'Fog') {
                 gsap.fromTo(".weather", {opacity: 0}, {duration: 7, backgroundImage: 'url(weather/fog.PNG)', opacity: 1});
                 img.removeAttribute('class');
                     Object.assign(img, {
@@ -332,6 +381,9 @@ async function retrieveData() {
                     })
                 
                 gsap.fromTo('.fog', {y: 5}, {duration: 3, y: -20});
+                //differentWeather.push(weather_descriptions);
+                printWeatherDescription.innerText = differentWeather;
+                differentWeather = [];
                 whiteColor();
             }
         }
