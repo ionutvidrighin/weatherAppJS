@@ -7,7 +7,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-   /* overflow: hidden;*/
+    /*overflow: hidden;*/
     font-family: 'Darker Grotesque', sans-serif;
     user-select: none;
 }
@@ -273,6 +273,15 @@ h1 {
 
 
 @media only screen and (max-width: 600px) {
+
+    body {
+        background-image: url(BGs/snow_mode.jpg);
+       /* background-position: center;*/
+        background-size: 100vh;
+        background-repeat: no-repeat;
+    
+    }  
+
     h1 {
         color:rgba(255, 255, 255);
         margin: 15px 0 3px 0 !important;
@@ -287,12 +296,6 @@ h1 {
         margin-top: 20px;
     }
 
-    body {
-        background-image: url(BGs/snow_mode.jpg);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }  
 
     .search {
         position: relative;
@@ -396,8 +399,7 @@ h1 {
         height: 100px; 
     }
     
-    .snow, .thunder, 
-    .cloudy1,  {
+    .snow, .thunder {
         margin-top: 15px;
         width: 100px;
         height: 80px; 
